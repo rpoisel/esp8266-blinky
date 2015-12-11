@@ -1,0 +1,3 @@
+[submodule "external/esp8266-cmake"]
+	path = external/esp8266-cmake
+	url = https://github.com/rpoisel/esp8266-cmake.git
