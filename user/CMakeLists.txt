@@ -1,23 +1,20 @@
-include(ESP8266-Deployment)
+add_library(USER_LIB INTERFACE)
+set_property(TARGET USER_LIB
+    PROPERTY INTERFACE_INCLUDE_DIRECTORIES
+    ${CMAKE_CURRENT_LIST_DIR}
+    )
 
-link_directories(
-    ${ESP8266_SDK_BASE}/lib
+file(GLOB USER_LIB_SRC
+    ${CMAKE_CURRENT_LIST_DIR}/*.c
 )
 
-add_executable(firmware
-    user_main.c
+add_library(user_lib STATIC
+    ${USER_LIB_SRC}
 )
 
-target_include_directories(firmware PRIVATE
-    $<TARGET_PROPERTY:ESP8266_SDK,INTERFACE_INCLUDE_DIRECTORIES>
+target_include_directories(user_lib PRIVATE
+    $<TARGET_PROPERTY:USER_LIB,INTERFACE_INCLUDE_DIRECTORIES>
     $<TARGET_PROPERTY:DRIVER_LIB_HDR,INTERFACE_INCLUDE_DIRECTORIES>
-)
+    $<TARGET_PROPERTY:ESP8266_SDK,INTERFACE_INCLUDE_DIRECTORIES>
+    )
 
-target_link_libraries(firmware
-    ${BUILD_LINK_PREFIX}
-    driver_lib
-    $<TARGET_PROPERTY:ESP8266_SDK,INTERFACE_LINK_LIBRARIES>
-    ${BUILD_LINK_SUFFIX}
-)
-
-create_deployment_rules(firmware)
